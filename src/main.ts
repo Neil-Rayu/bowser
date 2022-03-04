@@ -1,6 +1,9 @@
 import './style.css';
+import type { htmlNode } from './types';
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
+const domTree = document.querySelector('#dom-tree')!;
+console.log(domTree);
 
 let delayInMilliseconds = 1000; //1 second
 let form = document.querySelector('form')!;
@@ -20,6 +23,7 @@ form.onsubmit = (e) => {
   e.preventDefault();
   console.log(input.value);
   buildDom(exampleHTML);
+  renderComponent({ id: 1, tagName: 'BODY' });
 };
 
 let exampleHTML =
@@ -32,6 +36,10 @@ function buildDom(rawHTML: string) {
     for (let j = 0; j < htmlElements[i].length; j++) {}
   }
 }
-app.innerHTML = `
- 
-`;
+
+function renderComponent(child: htmlNode) {
+  let domHolder = document.createElement('div')!;
+  domHolder.className = 'dom-element';
+  domHolder.innerText = child.tagName;
+  domTree.append(domHolder);
+}

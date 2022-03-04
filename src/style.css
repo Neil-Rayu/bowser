@@ -6,3 +6,12 @@
   color: #2c3e50;
   margin-top: 60px;
 }
+
+.dom-element {
+  display: flex;
+  border: 3px solid black;
+  height: 50px;
+  width: 100px;
+  align-items: center;
+  justify-content: center;
+}
