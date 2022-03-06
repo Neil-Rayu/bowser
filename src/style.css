@@ -2,11 +2,18 @@
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
   margin-top: 60px;
 }
 
+#dom-tree {
+  display: flex;
+  flex-direction: column;
+}
+.dom-level {
+  display: flex;
+  justify-content: flex-start;
+}
 .dom-element {
   display: flex;
   border: 3px solid black;
