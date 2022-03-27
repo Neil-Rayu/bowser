@@ -7,14 +7,14 @@ console.log(domTree);
 
 let userUrl: string;
 let delayInMilliseconds = 1000; //1 second
-let form = document.querySelector('form')!;
-let input = document.getElementById('inputURL')!;
+const form = document.querySelector<HTMLFormElement>('form')!;
+const input = document.querySelector<HTMLInputElement>('#inputURL')!;
 function domAnimation() {
   for (let index = 0; index < 10; index++) {
     setTimeout(function () {
       let title = document.createElement('button');
       title.innerText = 'hello';
-      title.style = 'width: 100px';
+      title.style.setProperty('width', '100px');
       app.appendChild(title);
     }, delayInMilliseconds * index);
   }
@@ -27,11 +27,11 @@ form.onsubmit = (e) => {
 };
 
 //Test HTML will be replaced by function that dynamically fetches HTML
-//PRE-Process: trim end
+//PRE-Process: trim end and remove first two tags (Doctype, lang = "en") and last (/html)
 //Todo: add in inside tag style (i.e style = "width: 100px;")
 
 let exampleHTML =
-  '<!DOCTYPE html><html lang="en"><head><title>Document</title></head><body><span>Hello World</span></body></html';
+  '<head><title>Document</title></head><body><span>Hello World</span></body></html';
 
 function htmlParser(html: string[]): htmlNode[] {
   let htmlElements = [];
@@ -76,7 +76,6 @@ console.log('htmlElements: ', htmlElements);
 
 /**
  * @param  {htmlNode[]} elements
- * @param  {number} index
  * Recursive Function
  * Loops through raw html to build a dom that will later be displayed with renderComponent()
  *
@@ -94,11 +93,11 @@ console.log('htmlElements: ', htmlElements);
  * 11:  {tagName: 'body',           isAttr: false, isEndTag: true,  childNodes: Array(0), htmlTag: div}
  * 12:  {tagName: 'html',           isAttr: false, isEndTag: true,  childNodes: Array(0), htmlTag: div}
  *
+ * TODO: Remove end tags from the dom render
  */
-let domHash: { [key: number]: htmlNode } = {};
 
 function buildDom(elements: htmlNode[]) {
-  let level = -1;
+  let level = 0;
   for (let index = 0; index < elements.length; index++) {
     const element = elements[index];
     if (
@@ -114,19 +113,27 @@ function buildDom(elements: htmlNode[]) {
     ) {
       //element.htmlTag = document.createElement(element.tagName);
       level++;
+      element['level'] = level;
+      renderComponent(element);
     } else if (element.isAttr) {
       level -= 2;
+      element['level'] = level;
+      renderComponent(element);
     } else {
       level--;
+      element['level'] = level;
     }
 
-    element['level'] = level;
-    renderComponent(element);
+    // element['level'] = level;
+    // renderComponent(element);
   }
   console.log('element: ', elements);
 }
 
 // Adds visual element to the (id: dom-tree) div (the styles are stored in css class dom-element)
+/**
+ * @param  {htmlNode} child
+ */
 function renderComponent(child: htmlNode) {
   let domLevel = document.getElementById('' + child.level)!;
   let domHolder = document.createElement('div')!;
